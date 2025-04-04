@@ -30,9 +30,4 @@ class WeatherSettingsPage(BasePage):
 
         self.click((AppiumBy.XPATH, self.TEMP_UNIT_TOGGLE % unit))
 
-    def return_to_home_screen(self) -> None:
-        """Navigates back to the home screen by pressing the back button twice."""
-
-        self.driver.back()
-        self.driver.back()
 

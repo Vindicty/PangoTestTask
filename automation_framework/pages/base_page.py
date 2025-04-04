@@ -26,7 +26,8 @@ class BasePage:
 
     def find_element(self,
                      locator: Locator,
-                     wait_for: Literal["presence", "visible", "clickable"] = "presence") -> WebElement:
+                     wait_for: Literal["presence", "visible", "clickable"] = "presence",
+                     timeout: int = None) -> WebElement:
         """
         Waits for the specified condition and returns the found element.
 
@@ -34,7 +35,7 @@ class BasePage:
         @param string wait_for: Type of wait: 'presence', 'visible', or 'clickable'
         @return: WebElement
         """
-        wait = WebDriverWait(self.driver, self.timeout)
+        wait = WebDriverWait(self.driver, timeout or self.timeout)
 
         conditions = {
             "presence": EC.presence_of_element_located,
@@ -47,7 +48,7 @@ class BasePage:
 
         return wait.until(conditions[wait_for](locator))
 
-    def click(self, element: Union[WebElement, Locator]) -> None:
+    def click(self, element: Union[WebElement, Locator], timeout: int = None) -> None:
         """Clicks on the given element or locator.
 
         If a locator tuple (By, value) is provided, waits until the element is present,
@@ -58,11 +59,11 @@ class BasePage:
         """
 
         if not isinstance(element, WebElement):
-            element = self.find_element(element, wait_for="clickable")
+            element = self.find_element(element, wait_for="clickable", timeout=timeout)
 
         element.click()
 
-    def get_text(self, element: Union[WebElement, Locator]) -> str:
+    def get_text(self, element: Union[WebElement, Locator], timeout:int = None) -> str:
         """Extracts text from found element
 
         if type of element is not Webelement, waits untill element is present, find it and gets text.
@@ -73,18 +74,18 @@ class BasePage:
         """
 
         if type(element) is not WebElement:
-            element = self.find_element(element)
+            element = self.find_element(element, timeout=timeou)
 
         return element.text
 
-    def enter_text(self, element: Union[WebElement, Locator], text: str) -> None:
+    def enter_text(self, element: Union[WebElement, Locator], text: str, timeout: int = None) -> None:
         """ Clears the input field and enters the given text.
 
         @param tuple/WebElement element: WebElement or locator tuple (By, value)
         @param text: str, text to input
         """
         if type(element) is not WebElement:
-            element = self.find_element(element)
+            element = self.find_element(element, timeout=timeout)
 
         element.clear()
         element.send_keys(text)

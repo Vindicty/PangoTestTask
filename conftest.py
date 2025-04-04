@@ -24,9 +24,6 @@ def pytest_addoption(parser):
     )
 
 
-import pytest
-from appium import webdriver
-
 @pytest.fixture(scope="function")
 def appium_driver(request):
     """Initializes Appium driver using UiAutomator2Options with set_capability."""

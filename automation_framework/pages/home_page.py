@@ -1,5 +1,6 @@
 import time
 
+from selenium.common.exceptions import TimeoutException
 from typing import Dict, List, Tuple, Union
 
 from appium.webdriver.common.appiumby import AppiumBy
@@ -69,6 +70,23 @@ class HomePage(BasePage):
             city_temp_data[city] = self.get_displayed_temperature()
 
         return city_temp_data
+
+    def is_home_screen_displayed(self) -> bool:
+        """Checks if the temperature element is visible on the home screen."""
+
+        try:
+            return self.find_element(self.SETTINGS_BUTTON, timeout=2).is_displayed()
+        except TimeoutException:
+            return False
+
+    def return_to_home_screen(self) -> None:
+        """Navigates back to the home screen from any nested screen."""
+        max_attempts = 5
+        for _ in range(max_attempts):
+            if self.is_home_screen_displayed():
+                break
+            self.driver.back()
+            time.sleep(0.5)
 
 
 

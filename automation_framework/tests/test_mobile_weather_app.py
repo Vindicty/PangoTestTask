@@ -39,7 +39,7 @@ class TestMobileWeatherAPP:
             self.home_page.click(self.home_page.SETTINGS_BUTTON)
             self.settings_page.click(self.settings_page.CUSTOMIZE_UNITS)
             self.settings_page.set_temperature_measurement('°C')
-            self.settings_page.return_to_home_screen()
+            self.home_page.return_to_home_screen()
 
         with allure.step("2. Get temperature from APP for all cities"):
             app_temp_data = self.home_page.get_city_temperature(list(TEST_CITIES.keys()))

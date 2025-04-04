@@ -160,6 +160,4 @@ cython_debug/
 #.idea/
 
 /Scripts/
-*.db
-allure-results/
-allure-report/
+
