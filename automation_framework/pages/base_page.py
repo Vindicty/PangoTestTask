@@ -12,7 +12,7 @@ from appium.webdriver.webelement import WebElement
 Locator = Tuple[AppiumBy, str]
 
 class BasePage:
-    """ase class for all page objects in the mobile automation framework.
+    """Base class for all page objects in the mobile automation framework.
 
     Provides shared functionality for interacting with elements,
     such as waiting for presence, visibility, or clickability of elements.
