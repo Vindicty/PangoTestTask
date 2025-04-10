@@ -8,7 +8,8 @@ on:
 
 jobs:
   test:
-    runs-on: macos-latest  # можно заменить на ubuntu-latest, но Mac быстрее под Android
+    runs-on: macos-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout репозитория
@@ -23,9 +24,8 @@ jobs:
       - name: Установка Android SDK
         uses: android-actions/setup-android@v2
 
-      - name: Install emulator
+      - name: Установка эмулятора
         run: sdkmanager "emulator"
-
 
       - name: Установка system image
         run: |
@@ -39,12 +39,12 @@ jobs:
           adb wait-for-device
           adb shell input keyevent 82
 
-      - name: Установка Python и зависимостей
+      - name: Установка Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Установка зависимостей проекта
+      - name: Установка зависимостей Python
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
