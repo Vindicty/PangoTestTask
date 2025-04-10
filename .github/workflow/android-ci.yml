@@ -1,0 +1,38 @@
+name: Android Appium CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      android-emulator:
+        image: budtmo/docker-android-x86-11.0
+        ports:
+          - 4723:4723
+          - 6080:6080
+
+    steps:
+      - name: Checkout репозитория
+        uses: actions/checkout@v3
+
+      - name: Установка Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Установка зависимостей
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Ожидание запуска эмулятора
+        run: sleep 30  # Можно заменить на более точный healthcheck
+
+      - name: Запуск тестов
+        run: pytest tests/ --maxfail=1 --disable-warnings
