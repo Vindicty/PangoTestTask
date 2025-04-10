@@ -2,14 +2,19 @@ FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Установка зависимостей
 RUN apt-get update && apt-get install -y \
     curl wget unzip git openjdk-11-jdk \
     python3 python3-pip \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
+    libgl1-mesa-dev \
+    qemu-kvm \
+    libglib2.0-0 libnss3 libgconf-2-4 libfontconfig1 libxi6 \
+    && apt-get clean
 
+# Удаление устаревших версий nodejs/npm
+RUN apt-get remove -y nodejs npm
 
-# Установка Node.js 18
+# Установка Node.js 18 (совместим с Appium 2.17+)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
@@ -20,15 +25,23 @@ RUN npm install -g appium
 ENV ANDROID_HOME /opt/android-sdk
 ENV PATH ${PATH}:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/emulator:${ANDROID_HOME}/tools
 
-RUN mkdir -p ${ANDROID_HOME}/cmdline-tools \
-    && curl -o sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip \
-    && unzip sdk.zip -d ${ANDROID_HOME}/cmdline-tools \
-    && mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/tools \
-    && yes | sdkmanager --licenses \
-    && sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3" "system-images;android-30;google_apis;x86" "emulator"
+RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
+    curl -o sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip && \
+    unzip sdk.zip -d ${ANDROID_HOME}/cmdline-tools && \
+    mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools ${ANDROID_HOME}/cmdline-tools/tools && \
+    yes | sdkmanager --licenses && \
+    sdkmanager \
+      "platform-tools" \
+      "emulator" \
+      "platforms;android-30" \
+      "build-tools;30.0.3" \
+      "system-images;android-30;google_apis;x86"
 
 # Создание AVD
 RUN echo "no" | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86"
 
-# Запуск Appium по умолчанию
+# Рабочая директория
+WORKDIR /app
+
+# Команда по умолчанию (можно изменить)
 CMD ["appium"]
