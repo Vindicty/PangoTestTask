@@ -8,51 +8,34 @@ on:
 
 jobs:
   test:
-    runs-on: macos-latest
-    timeout-minutes: 20
+    runs-on: ubuntu-latest
+
+    container:
+      image: budtmo/docker-android-x86-11.0
+      options: --privileged
+
+    timeout-minutes: 30
 
     steps:
       - name: Checkout репозитория
         uses: actions/checkout@v3
-
-      - name: Установка Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Установка Android SDK
-        uses: android-actions/setup-android@v2
-
-      - name: Установка эмулятора
-        run: sdkmanager "emulator"
-
-      - name: Установка system image
-        run: |
-          yes | sdkmanager "system-images;android-30;google_apis;arm64-v8a"
-          yes | sdkmanager --licenses
-
-      - name: Создание и запуск Android эмулятора
-        run: |
-          echo "no" | avdmanager create avd -n test -k "system-images;android-30;google_apis;arm64-v8a"
-          emulator -avd test -no-audio -no-window -no-boot-anim &
-          adb wait-for-device
-          adb shell input keyevent 82
 
       - name: Установка Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Установка зависимостей Python
+      - name: Установка зависимостей
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Установка Appium
+      - name: Ожидание запуска эмулятора и Appium
         run: |
-          npm install -g appium
-          nohup appium --base-path /wd/hub > appium.log 2>&1 &
+          echo "Ожидание 60 секунд запуска эмулятора..."
+          sleep 60
+          adb devices
+          curl http://localhost:4723/wd/hub/status
 
       - name: Запуск тестов
         run: pytest tests/ --maxfail=1 --disable-warnings
