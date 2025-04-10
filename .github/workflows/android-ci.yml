@@ -17,11 +17,12 @@ jobs:
       - name: Build Docker image
         run: docker build -t local-appium-image .
 
-      - name: Запуск тестов внутри контейнера
+      - name: Запуск тестов
         run: |
           docker run --privileged \
             -v ${{ github.workspace }}:/app \
             -w /app \
+            -e BASE_DIR="/app" \
             local-appium-image \
             bash -c "
               emulator -avd test -no-audio -no-window -no-boot-anim &
@@ -29,3 +30,4 @@ jobs:
               nohup appium --base-path /wd/hub > appium.log 2>&1 &
               sleep 30 &&
               pytest tests/ --maxfail=1 --disable-warnings"
+      

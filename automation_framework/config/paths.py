@@ -1,7 +1,7 @@
+import os
 from pathlib import Path
 
-# Base project directory
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(os.getenv("BASE_DIR", Path(__file__).resolve().parent.parent.parent))
 
 
 # Config file location
