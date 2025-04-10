@@ -5,9 +5,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     curl wget unzip git openjdk-11-jdk \
     python3 python3-pip \
-    libgl1-mesa-dev \
-    qemu-kvm \
-    && apt-get clean
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+
 
 # Установка Node.js 18
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
