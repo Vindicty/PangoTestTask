@@ -23,7 +23,9 @@ RUN npm install -g appium
 
 # Установка зависимостей Python (тут!)
 COPY requirements.txt /app/
-RUN pip3 install --upgrade pip && pip3 install -r /app/requirements.txt
+RUN python3 -m pip install --upgrade pip setuptools wheel && \
+    pip3 install -r /app/requirements.txt
+
 
 # Установка Android SDK
 ENV ANDROID_HOME /opt/android-sdk
