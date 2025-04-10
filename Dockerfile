@@ -2,10 +2,8 @@ FROM python:3.10-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Установка зависимостей
 RUN apt-get update && apt-get install -y \
-    curl wget unzip git openjdk-11-jdk \
-    python3 python3-pip \
+    curl wget unzip git default-jdk \
     libgl1-mesa-dev \
     qemu-kvm \
     libglib2.0-0 libnss3 libgconf-2-4 libfontconfig1 libxi6 \
