@@ -21,6 +21,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
 # Установка Appium
 RUN npm install -g appium
 
+# Установка зависимостей Python (тут!)
+COPY requirements.txt /app/
+RUN pip3 install --upgrade pip && pip3 install -r /app/requirements.txt
+
 # Установка Android SDK
 ENV ANDROID_HOME /opt/android-sdk
 ENV PATH ${PATH}:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/emulator:${ANDROID_HOME}/tools
