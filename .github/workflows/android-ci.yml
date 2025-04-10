@@ -23,6 +23,10 @@ jobs:
       - name: Установка Android SDK
         uses: android-actions/setup-android@v2
 
+      - name: Install emulator
+        run: sdkmanager "emulator"
+
+
       - name: Установка system image
         run: |
           yes | sdkmanager "system-images;android-30;google_apis;x86"
