@@ -4,45 +4,51 @@ on:
   push:
     branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
-  build:
-    runs-on: macos-latest  # или ubuntu-latest, если Android-only
+  test:
+    runs-on: macos-latest  # можно заменить на ubuntu-latest, но Mac быстрее под Android
 
     steps:
-      - name: Checkout репозиторий
+      - name: Checkout репозитория
         uses: actions/checkout@v3
 
-      - name: Setup Java
+      - name: Установка Java
         uses: actions/setup-java@v3
         with:
-          distribution: "zulu"
-          java-version: "17"
+          distribution: 'zulu'
+          java-version: '17'
 
-      - name: Setup Android SDK
+      - name: Установка Android SDK
         uses: android-actions/setup-android@v2
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Установка зависимостей
+      - name: Установка system image
         run: |
-          pip install -r requirements.txt
-          npm install -g appium
-          appium --version
+          yes | sdkmanager "system-images;android-30;google_apis;x86"
+          yes | sdkmanager --licenses
 
-      - name: Create and start Android emulator
+      - name: Создание и запуск Android эмулятора
         run: |
           echo "no" | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86"
-          emulator -avd test -no-audio -no-window &
+          emulator -avd test -no-audio -no-window -no-boot-anim &
           adb wait-for-device
           adb shell input keyevent 82
 
-      - name: Запуск Appium
+      - name: Установка Python и зависимостей
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Установка зависимостей проекта
         run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Установка Appium
+        run: |
+          npm install -g appium
           nohup appium --base-path /wd/hub > appium.log 2>&1 &
 
       - name: Запуск тестов
-        run: pytest tests/
+        run: pytest tests/ --maxfail=1 --disable-warnings
