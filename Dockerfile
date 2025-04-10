@@ -2,14 +2,16 @@ FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Установка зависимостей
 RUN apt-get update && apt-get install -y \
     curl wget unzip git openjdk-11-jdk \
     python3 python3-pip \
-    nodejs npm \
     libgl1-mesa-dev \
     qemu-kvm \
     && apt-get clean
+
+# Установка Node.js 18
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
 
 # Установка Appium
 RUN npm install -g appium
