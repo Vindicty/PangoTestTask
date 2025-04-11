@@ -36,7 +36,7 @@ def appium_driver(request):
     options.set_capability("app", str(APK_PATH))
 
 
-    driver = webdriver.Remote("http://127.0.0.1:4723", options=options)
+    driver = webdriver.Remote("http://127.0.0.1:4723/wd/hub", options=options)
     yield driver
     driver.quit()
 
