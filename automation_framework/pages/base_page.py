@@ -74,7 +74,7 @@ class BasePage:
         """
 
         if type(element) is not WebElement:
-            element = self.find_element(element, timeout=timeou)
+            element = self.find_element(element, timeout=timeout)
 
         return element.text
 
