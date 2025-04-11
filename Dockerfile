@@ -17,8 +17,10 @@ RUN apt-get remove -y nodejs npm || true
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
 
-# Установка Appium
-RUN npm install -g appium
+# Установка Appium и драйвера Android
+RUN npm install -g appium && \
+    appium driver install uiautomator2
+
 
 # Установка Python-зависимостей
 COPY requirements.txt /app/
